@@ -1,0 +1,24 @@
+sudo bash
+cd /var/lib/airflow/configs
+mkdir permissions
+nano set_permissions.sh
+
+for dir in $1
+do
+        echo "Changing permissions for dir: $dir"
+        chmod -R ugo+rwx $dir
+        echo "Done"
+done
+
+cat set_permissions.sh
+chmod u+x set_permissions.sh
+cd /etc
+echo "root" > cron.allow
+cat /etc/cron.allow
+/usr/bin/crontab /var/spool/cron/root
+echo "0,10,20,30,40,50 6-18 * * 1-5 /var/lib/airflow/configs/permissions/set_permissions.sh /var/lib/airflow/testing" >> /var/spool/cron/root
+echo "0,10,20,30,40,50 6-18 * * 1-5 /var/lib/airflow/configs/permissions/set_permissions.sh /var/lib/airflow/projects" >> /var/spool/cron/root
+echo "0,10,20,30,40,50 6-18 * * 1-5 /var/lib/airflow/configs/permissions/set_permissions.sh /var/lib/airflow/dags" >> /var/spool/cron/root
+crontab -u root -l
+exit
+clear
