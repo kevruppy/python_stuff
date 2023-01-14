@@ -1,0 +1,18 @@
+sudo su - ec2-user
+sudo yum install python3 -y
+curl -O https://bootstrap.pypa.io/get-pip.py
+sudo python3 get-pip.py
+export PATH=$PATH:/usr/local/bin
+pip install google-cloud-bigquery -t ./python/
+zip -r google-cloud-bigquery.zip python
+#Added because protobuf is required
+pip install protobuf --upgrade -t ./python/
+zip -r google-cloud-bigquery.zip ./python/google/protobuf
+
+aws configure
+<provide Access Key ID>
+<provide Secret Access Key>
+<provde default region>
+<provide default output format>
+
+aws s3 cp google-cloud-bigquery.zip s3://<YOUR_BUCKET>
